@@ -28,22 +28,10 @@ provider:
   runtime: nodejs12.x
   region: us-east-1
   stage: dev
-  TableDB: ${self:custom.stage}-tableDB
-  tableThroughputs:
-    prod: 1
-    default: 1
-  tableThroughput: ${self:custom.tableThroughputs.${self:custom.stage}, self:custom.tableThroughputs.default}
-  # To load environment variables externally
-  # rename env.example to env.yml and uncomment
-  # the following line. Also, make sure to not
-  # commit your env.yml.
-  #
   environment:
     BookingsDB: ${self:custom.BookingsDB}
     ListingsDB: ${self:custom.ListingsDB}
-    name_of_var: ${env:NAME_OF_VAR}
-    tableDB: ${self:custom.tableDB}
-    account: ${env:ACCOUNT}
+    stripeSecretKey: ${env:STRIPE_SECRET_KEY}
 
   iamRoleStatements:
     - Effect: Allow
@@ -62,16 +50,8 @@ provider:
       # Restrict our IAM role permissions to
       # the specific table for the stage
       Resource:
-        # - "Fn::GetAtt": [TableDB, Arn]
         - "Fn::GetAtt": [ListingsDB, Arn]
         - "Fn::GetAtt": [BookingsDB, Arn]
-    # - Effect: "Allow"
-    #   Action:
-    #     - "sqs:GetQueueUrl"
-    #     - "sqs:ListQueues"
-    #     - "sqs:SendMessage"
-    #   Resource:
-    #     - "arn:aws:sqs:${self:provider.environment.region}:${self:provider.environment.account}:*"
 
 functions:
   graphql:
@@ -94,12 +74,4 @@ functions:
 resources:
   - ${file(resources/listing-db.yml)}
   - ${file(resources/booking-db.yml)}
-  # - ${file(resources/sqs-queue.yml)}
-  # - ${file(resources/table.yml)}
-  # - ${file(resources/s3-bucket.yml)}
-  # - ${file(resources/cognito-identity-pool.yml)}
-  # - ${file(resources/cognito-user-pool.yml)}
-  # events:
-  #     - sqs:
-  #         arn: "arn:aws:sqs:${self:provider.environment.region}:${self:provider.environment.account}:${self:provider.environment.quque_name}-${self:provider.stage}"
-  #         batchSize: 1
+

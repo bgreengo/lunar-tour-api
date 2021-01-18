@@ -1,14 +1,55 @@
 import * as dynamoDBLib from "../../libs/dynamodb-lib";
 
-const params = {
-    TableName: process.env.ListingsDB || "dev-listings",
-    FilterExpression: "listingId = :listingId",
-    ExpressionAttributeVaules: {
-        ":listingId": args.listingId,
-    },
+export const getAllListings = async (args, context) => {
+  const params = {
+    TableName: process.env.ListingsDB || "dev-lunar-listings",
+  };
+  try {
+        const result = await dynamodb.scan(params);
+
+        if (result.Items.length === 0) {
+            return "You have no listings"
+        } else {
+            return result.Items.map(i => ({
+                listingId: i.listingId,
+                coverPhoto: i.coverPhoto,
+                listingName: i.listingName,
+                listingDescription: i.listingDescription,
+                listingType: i.listingType.map(m => ({
+                    name: m
+                })),
+                listingLocation: i.listingLocation,
+                listingActivities: i.listingActivities.map(k => ({
+                    name: k
+                })),
+                specialType: i.specialType,
+                specialAmount: i.specialAmount,
+                rating: i.rating,
+                guide: {
+                    Name: i.guid.name,
+                    Bio: i.guide.bio,
+                    Avatar: i.guid.avatar
+                },
+                price: i.prive,
+                numberOfDays: i.numberOfDays
+            }))
+        }
+    } catch (e) {
+        return {
+            message: e.message,
+            code: "500x"
+        }
+    }
 }
 export const getAListing = async (args, context) => {
-    try {
+  const params = {
+    TableName: process.env.ListingsDB || "dev-lunar-listings",
+    FilterExpression: "listingId = :listingId",
+    ExpressionAttributeValues: {
+      ":listingId": args.listingId,
+    },
+  };  
+  try {
         const listing = await dynamodb.scan(params)
       
         if (listing.Items.length === 0) {
@@ -47,41 +88,3 @@ export const getAListing = async (args, context) => {
     }
 }
 
-export const getAllListings = async (args, context) => {
-    try {
-        const result = await dynamoDBLib.call("scan", params)
-
-        if (result.Items.length === 0) {
-            return "You have no listings"
-        } else {
-            return result.Items.map(i => ({
-                listingId: i.listingId,
-                coverPhoto: i.coverPhoto,
-                listingName: i.listingName,
-                listingDescription: i.listingDescription,
-                listingType: i.listingType.map(m => ({
-                    name: m
-                })),
-                listingLocation: i.listingLocation,
-                listingActivities: i.listingActivities.map(k => ({
-                    name: k
-                })),
-                specialType: i.specialType,
-                specialAmount: i.specialAmount,
-                rating: i.rating,
-                guide: {
-                    Name: i.guid.name,
-                    Bio: i.guide.bio,
-                    Avatar: i.guid.avatar
-                },
-                price: i.prive,
-                numberOfDays: i.numberOfDays
-            }))
-        }
-    } catch (e) {
-        return {
-            message: e.message,
-            code: "500x"
-        }
-    }
-}

@@ -35,6 +35,42 @@ type Query {
      getAListing(listingId: String!): Listing!
 }
 
+type Booking {
+     ID: String
+     listingID: String
+     bookingDate: String
+     size: Int
+     bookingTotal: String
+     customerEmail: String
+     customers: [Customer]
+     chargeReciept: String
+}
+type Customer {
+     name: String
+     Surname: String
+     country: String
+     passportNumber: String
+     physioScore: String
+}
+
+input InputCustomer {
+     name: String
+     Surname: String
+     country: String
+     passportNumber: String
+     physioScore: String
+}
+
+type Mutation {
+     makeABooking(
+       listingId: String
+       size: Int,
+       bookingDate: String,
+       customerEmail: String,
+       customers: [InputCustomer]
+     ): Booking
+ 
+}
 `
 
 export {schema}
