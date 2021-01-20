@@ -12,7 +12,7 @@ export const makeABooking = async (args, context) => {
             }
         }
         try {
-            const listings = await dynamoDBLib.call("query", params)
+            const listings = await dynamodb.query(params);
             return listings
         } catch (e) {
             return e

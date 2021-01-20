@@ -8,7 +8,7 @@ console.log("Listings.Init", listings)
 
 listings.map(l => {
     listingParams = {
-        TableName: "dev-lunar-listings",
+        TableName: "dev-listings",
         Item: {
             coverPhoto: l.coverPhoto,
             guide: {
