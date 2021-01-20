@@ -19,6 +19,7 @@ listings.map(l => {
             listingActivities: l.listingActivities,
             listingDescritption: l.listingDescription,
             listingId: l.listingId,
+            listingName: l.listingName,
             listingLocation: l.listingLocation,
             listingType: l.listingType,
             numberOfDays: l.numberOfDays,
@@ -31,7 +32,6 @@ listings.map(l => {
         if(err) {
             console.error(
                 "Unable to add listing",
-                user.name,
                 ". Error JSON: ",
                 JSON.stringify(err, null, 2)
             )
